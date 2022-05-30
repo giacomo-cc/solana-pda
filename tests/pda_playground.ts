@@ -31,6 +31,7 @@ describe("pda_playground", async () => {
       .initialize()
       .accounts({
         authority: provider.wallet.publicKey,
+        payer: provider.wallet.publicKey,
         config,
         mint: mint.publicKey,
       })

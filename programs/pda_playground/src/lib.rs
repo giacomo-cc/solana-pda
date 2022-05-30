@@ -29,13 +29,18 @@ pub mod pda_playground {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(mut)]
-    pub authority: Signer<'info>,
 
-    #[account(init, payer = authority, space = 8 + 32 + 1, seeds = [b"config-pda", authority.key().as_ref()], bump)]
+    /// CHECK:
+    #[account()]
+    pub authority: AccountInfo<'info>,
+
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(init, payer = payer, space = 8 + 32 + 1, seeds = [b"config-pda", authority.key().as_ref()], bump)]
     pub config: Account<'info, Config>,
 
-    #[account(init, payer = authority, mint::decimals = 0, mint::authority = config)]
+    #[account(init, payer = payer, mint::decimals = 0, mint::authority = config)]
     pub mint: Account<'info, Mint>,
 
     pub system_program: Program<'info, System>,
@@ -45,7 +50,7 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct MintToken<'info> {
-    #[account(mut)]
+    #[account()]
     pub authority: Signer<'info>,
 
     #[account(seeds = [b"config-pda", authority.key().as_ref()], bump)]
